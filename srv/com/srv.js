@@ -1,10 +1,17 @@
 // Intégration des librairies
+require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const errors = require('./error')
 
 /**
  * Configuration du serveur
  */
+
+const port = process.env.SRVPORT || 3000
+const dbConf = process.env
+const stringConnection = `mongodb://${dbConf.USER}:${dbConf.PASSWORD}@${dbConf.HOST}:${dbConf.PORT}/${dbConf.NAME}`
 
 // Déclaration de la variable d'utilisation d'ExpressJs
 let app = express()
@@ -23,18 +30,20 @@ app.use(require('./routers/joueurs'))
 app.use(require('./routers/suivis'))
 app.use(require('./routers/tournois'))
 
+// Gestion des erreurs
+app.use(errors.error404)
+app.use(errors.error500)
+
 // Fonction de lancement du serveur
-async function connexion() {
+exports.connexion = async () => {
     // Lancement du serveur
     try {
-        await app.listen(3000)
-        console.log('Serveur sur écoute à l\'adresse : http://127.0.0.1:3000')
+        await mongoose.connect(stringConnection, { useNewUrlParser: true, useUnifiedTopology: true })
+        console.log(`Base de donnée sur l'adresse : ${dbConf.HOST}:${dbConf.PORT}`)
+        await app.listen(port)
+        console.log(`Serveur sur écoute à l'adresse : http://127.0.0.1:${port}`)
     }
     catch(err) {
         throw err
     }
-}
-
-module.exports = {
-    connexion : connexion
 }
