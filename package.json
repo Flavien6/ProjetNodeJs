@@ -1,0 +1,21 @@
+{
+  "name": "tournois",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./srv/main.js",
+  "scripts": {
+    "start": "node ./srv/main.js",
+    "dev" : "npx nodemon ./srv/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Flavien6/ProjetNodeJs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Flavien6/ProjetNodeJs/issues"
+  },
+  "homepage": "https://github.com/Flavien6/ProjetNodeJs#readme"
+}
