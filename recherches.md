@@ -19,7 +19,7 @@ Systèmes pour la bonne gestion des appariements
 - - On se base sur les tables de berger pour définir les affrontements
 - - En cas de joueurs impairs, il y a un exempt à chauqe ronde, le joueur ne joue pas et marque le point de la victoire.
 
-| 3 ou 4 joueurs      |
+| 3 ou 4 joueurs |    | |
 | ------- | :-: | :-: |
 | Ronde 1 | 1-4 | 2-3 |
 | Ronde 2 | 4-3 | 1-2 |
