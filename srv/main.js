@@ -1,1 +1,4 @@
-console.log('test')
+const srv = require('./com/srv')
+
+console.log('Start...')
+srv.connexion()
