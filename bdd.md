@@ -6,7 +6,7 @@ La base de donnée est une base MongoDB
 
 - Nom     : db_tournois
 - Adresse : 127.0.0.1 // Localhost
-- User    : Admin
+- User    : admin
 - MDP     : Admin123
 
 | Tournoi |
