@@ -1,0 +1,32 @@
+extends ../../struct/layout
+
+append content
+    .row.justify-content-center
+        .col-auto
+            h1 Utilisateurs
+    .row.justify-content-center
+        .col-auto
+        button.btn.btn-primary#ajouterJoueurs Ajouter
+        |
+        iframe.embed-responsive-item(src='joueurs/new' allowfullscreen)
+        |
+        a.btn.btn-primary(href='joueurs/new' role="button") Ajouter
+
+    .row
+        .col-12
+            ul.list-group.list-group-flush
+                each joueur, i in data
+                    li.list-group-item.containre-fluid
+                        .row
+                            .col-3
+                                | #{i+1} - #{joueur.nom} #{joueur.prenom}
+
+                            .col-auto
+                                .btn-group(role="group")
+                                    a.btn.btn-success(href="joueurs/" + joueur._id  role="button") Modifier
+                                    a.btn.btn-danger(href="#" role="button") Supprimer
+                else
+                    li.list-group-item.containre-fluid
+                        .row.justify-content-center
+                            .col-auto
+                                p Pas de Joueurs

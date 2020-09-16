@@ -2,7 +2,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-const errors = require('./error')
 const conf = require('../config/config')
 
 /**
@@ -16,7 +15,7 @@ const stringConnection = `mongodb://${conf.db.user}:${conf.db.pw}@${conf.db.host
 let app = express()
 
 // Définition du rendu des pages dans express
-app.set('views', 'srv/views')
+app.set('views', './projet/client/views')
 app.set('view engine', 'pug')
 
 // Utilisation des plugins de detection du format de la réponse des requêtes POST
@@ -24,14 +23,24 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 // Intégration des routes
-app.use(require('./routers/joueurs'))
-app.use(require('./routers/suivis'))
-app.use(require('./routers/tournois'))
-app.use(require('./routers/root'))
+app.use(require('./routes/joueurs'))
+app.use(require('./routes/suivis'))
+app.use(require('./routes/tournois'))
+app.use(require('./routes/home'))
 
-// Gestion des erreurs
-app.use(errors.error404)
-app.use(errors.error500)
+// Route par défaut représentant toutes les routes
+app.get('*', (req, res, next) => {
+    let err = new Error()
+    next({...err, status: 404, msg: 'Page non trouvée.'})
+})
+
+// Middleware de traitement des erreurs
+app.use((err, req, res, next) => {
+    res.status(err.status).render('error', {
+        title: `Erreur ${err.status}`,
+        msg: err.msg
+    })
+})
 
 // Fonction de lancement du serveur
 exports.connexion = async () => {

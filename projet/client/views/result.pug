@@ -1,0 +1,8 @@
+extends ../struct/layout
+
+append content
+    .row.justify-content-center
+        .col-auto
+            .alert.alert-dismissible(class=`alert-${type}`)
+                h2.alert-heading #{msg}
+                a.mb-0(href=url) Retour à la liste

@@ -5,12 +5,12 @@ let router = express.Router()
 
 // Configuration du template de la page
 let page = {
-    page: 'Tournois'
+    title: 'Tournois'
 }
 
 // Définition de la route d'entrée sur le serveur
 router.route('/tournois').get((req, res) => {
-    res.render('tournois', page)
+    res.render('viewPages/tournois', page)
 })
 
 module.exports = router
