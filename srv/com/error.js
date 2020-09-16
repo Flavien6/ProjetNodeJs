@@ -5,12 +5,15 @@ let page = {
 
 // Fonction de traitement d'une erreur 404
 exports.error404 = (err, req, res, next) => {
-    page.msg = err
-    res.status(404)
-    res.render('error', page)
+    if(err.status == 404) {
+        page.msg = err
+        res.status(404)
+        res.render('error', page)
+    }
+    else next(err)
 }
 
-// Fonction de traitement d'une erreur 404
+// Fonction de traitement d'une erreur 500
 exports.error500 = (err, req, res, next) => {
     page.msg = err
     res.status(500)

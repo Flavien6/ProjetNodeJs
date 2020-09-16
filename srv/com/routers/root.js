@@ -13,4 +13,10 @@ router.route('/').get((req, res) => {
     res.render('index', page)
 })
 
+router.route('*').get((req, res, next) => {
+    let err = new Error()
+    err.status = 404
+    next(err)
+})
+
 module.exports = router
