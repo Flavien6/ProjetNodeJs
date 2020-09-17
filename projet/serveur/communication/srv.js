@@ -38,6 +38,7 @@ app.get('*', (req, res, next) => {
 app.use((err, req, res, next) => {
     res.status(err.status).render('error', {
         title: `Erreur ${err.status}`,
+        status: err.status,
         msg: err.msg
     })
 })
