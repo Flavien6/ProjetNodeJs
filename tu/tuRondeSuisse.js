@@ -20,7 +20,6 @@ describe('Initialisation d\' une ronde suisse', () => {
         groupes.must.length(2)
         groupes[0].must.length(2)
         groupes[1].must.length(2)
-        groupes[2].must.length(2)
 
         groupes[0][0].must.have.property('id')
         groupes[0][0].id.must.equal(1)
@@ -38,7 +37,8 @@ describe('Initialisation d\' une ronde suisse', () => {
         groupes[0].must.length(2)
         groupes[1].must.length(2)
         groupes[2].must.length(2)
-        groupes[3].must.length(2)
+        groupes[2][1].must.have.property('id')
+        groupes[2][1].id.must.equal(0)
 
         groupes[0][0].must.have.property('id')
         groupes[0][0].id.must.equal(1)
@@ -52,7 +52,7 @@ describe('Initialisation d\' une ronde suisse', () => {
     it('Groupe de 40 joueurs', () => {
         let groupes = rondeSuisse.initialiser(['j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10', 'j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10', 'j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10', 'j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10'])
         
-        groupes.must.length(10)
+        groupes.must.length(20)
         groupes[0].must.length(2)
         groupes[1].must.length(2)
         groupes[2].must.length(2)
@@ -81,5 +81,54 @@ describe('Initialisation d\' une ronde suisse', () => {
         groupes[0][0].must.have.property('couleur')
         groupes[0][1].must.have.property('couleur')
         groupes[0][1].couleur.must.not.equal(groupes[0][0].couleur)
+    })
+})
+
+describe('Calcul des points pour une ronde suisse', () => {
+
+    it('Type et joueurs obligatoires', () => {
+        expect(() => { rondeSuisse.calculPoints() }).to.throw()
+    })
+
+    it('Type inexistant', () => {
+        expect(() => { rondeSuisse.calculPoints('a', {}) }).to.throw()
+        expect(() => { rondeSuisse.calculPoints('', {}) }).to.throw()
+        expect(() => { rondeSuisse.calculPoints(null, {}) }).to.throw()
+        expect(() => { rondeSuisse.calculPoints(undefined, {}) }).to.throw()
+    })
+
+    it('Joueur invalide', () => {
+        expect(() => { rondeSuisse.calculPoints('v', {}) }).to.throw()
+        expect(() => { rondeSuisse.calculPoints('v', null) }).to.throw()
+        expect(() => { rondeSuisse.calculPoints('v', undefined) }).to.throw()
+    })
+
+    it('Vainqueur', () => {
+        let joueur = rondeSuisse.calculPoints('v', { name: 'j1', pts: 2 })
+        joueur.must.have.property('pts')
+        joueur.pts.must.equal(3)
+    })
+
+    it('Perdant', () => {
+        let joueur = rondeSuisse.calculPoints('p', { name: 'j1', pts: 2 })
+        joueur.must.have.property('pts')
+        joueur.pts.must.equal(2)
+    })
+
+    it('Egalité', () => {
+        let joueur = rondeSuisse.calculPoints('e', { name: 'j1', pts: 2 })
+        joueur.must.have.property('pts')
+        joueur.pts.must.equal(2.5)
+    })
+})
+
+describe('Détermination des prochains affrontements pour une ronde suisse', () => {
+
+    it('déterminer les affrontements d\'un groupe de 6 personnes', () => {
+        let groupes = rondeSuisse.determineAffrontements([
+            { name: 'j1', pts: 1,  }
+        ])
+        joueur.must.have.property('pts')
+        joueur.pts.must.equal(3)
     })
 })

@@ -15,9 +15,7 @@ const joueurSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    mail: {
-        type: String
-    }
+    mail: String
 })
 
 module.exports = mongoose.model('Joueur', joueurSchema)

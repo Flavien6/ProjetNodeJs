@@ -18,7 +18,7 @@ La base de donnée est une base MongoDB
 | Date Debut |
 | Date Fin |
 | Disciplines - Enum : Echecs... |
-| Type - Enum : Elimination Directe, Ronde Suisses... |
+| Système - Enum : Elimination Directe, Ronde Suisses... |
 | Equipe - Bool |
 | Creneaux |
 

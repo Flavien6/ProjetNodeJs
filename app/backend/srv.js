@@ -1,8 +1,9 @@
 // Intégration des librairies
 const express = require('express')
+const session = require('express-session')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-const conf = require('../config/config')
+const conf = require('./config')
 
 /**
  * Configuration du serveur
@@ -15,12 +16,26 @@ const stringConnection = `mongodb://${conf.db.user}:${conf.db.pw}@${conf.db.host
 let app = express()
 
 // Définition du rendu des pages dans express
-app.set('views', './projet/client/views')
+app.set('views', './app/frontend/views')
 app.set('view engine', 'pug')
+
+// Elements static
+app.use('/assets', express.static('./app/frontend/public'))
 
 // Utilisation des plugins de detection du format de la réponse des requêtes POST
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
+
+// Utilisation de la session
+app.use(session({
+    secret: 'tournois',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+}))
+
+// Gestion des retours d'erreurs pour l'utilisateur
+app.use(require('./middlewares/retour'))
 
 // Intégration des routes
 app.use(require('./routes/joueurs'))
@@ -35,13 +50,7 @@ app.get('*', (req, res, next) => {
 })
 
 // Middleware de traitement des erreurs
-app.use((err, req, res, next) => {
-    res.status(err.status).render('error', {
-        title: `Erreur ${err.status}`,
-        status: err.status,
-        msg: err.msg
-    })
-})
+app.use(require('./middlewares/error'))
 
 // Fonction de lancement du serveur
 exports.connexion = async () => {

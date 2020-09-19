@@ -38,14 +38,24 @@ exports.initialiser = groupe => {
         groupes.push([g1[i], g2[i]])
     }
 
-    console.log(groupes);
-
     return groupes
 }
 
 // Calcul les points à attribuer au joueur en foncion de son résultat
 exports.calculPoints = (type, joueur) => {
-
+    if(joueur === null || joueur === undefined || !joueur.pts) throw 'Joueur invalide'
+    switch(type) {
+        case 'v':
+            joueur.pts++
+            return joueur
+        case 'p':
+            return joueur
+        case 'e':
+            joueur.pts = joueur.pts + 0.5
+            return joueur
+        default:
+            throw 'Type incorrect'
+    }
 }
 
 // Détermine les prochains affrontements à partir d'un tableaux de joueur et de leurs points

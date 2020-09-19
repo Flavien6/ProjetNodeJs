@@ -1,4 +1,4 @@
-const srv = require('./communication/srv')
+const srv = require('./backend/srv')
 srv.connexion()
 .then(() => {
     console.log('...')

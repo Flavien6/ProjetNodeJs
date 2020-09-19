@@ -1,0 +1,20 @@
+extends ../../struct/layout
+
+append content
+    .row.justify-content-center
+        .col-md-auto.mb-4
+            a.btn.btn-primary(href='joueurs/new' role="button") Ajouter
+
+    .row
+        .col-md-12
+            ul.list-group.list-group-flush
+                each joueur, i in joueurs
+                    li.list-group-item.d-flex.justify-content-between.lh-condensed
+                        h2 #{i+1} - #{joueur.nom} #{joueur.prenom}
+                        .btn-group(role="group")
+                            a.btn.btn-success(href="joueurs/" + joueur._id  role="button") Modifier
+                            a.btn.btn-danger(href="#" role="button") Supprimer
+                            a.btn.btn-info(href="#" role="button") Détail
+                else
+                    li.list-group-item.d-flex.justify-content-center
+                        h2 Pas de Joueurs
