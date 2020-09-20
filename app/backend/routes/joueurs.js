@@ -50,7 +50,7 @@ router.route('/joueurs/:id')
 // .delete(joueurs.remove)
 
 router.route('/joueur/:id')
-.get((req, res, next) => {
+.get((req, res) => {
     let id = req.params.id
 
     Joueur.findById(id).exec()
