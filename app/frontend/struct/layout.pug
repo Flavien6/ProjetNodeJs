@@ -1,4 +1,4 @@
-html
+html.h-100
     include headHtml
     
     body.d-flex.flex-column.h-100
@@ -13,11 +13,11 @@ html
                         if retour.error
                             .col-md.alert.alert-dismissible.alert-danger
                                 button.close(type='button', data-dismiss='alert') ×
-                                p=retour.error
+                                strong=retour.error
                         else if retour.success
                             .col-md.alert.alert-dismissible.alert-success
                                 button.close(type='button', data-dismiss='alert') ×
-                                p=retour.success
+                                strong=retour.success
 
             // Bloc principal
             .container

@@ -1,6 +1,28 @@
 extends ../../struct/layout
 
 append content
+    .row.justify-content-center
+        .col-auto.mb-4
+            a.btn.btn-primary(href='tournois/new' role="button") Ajouter
+
     .row
-        .col-auto
-            p TOURNOIS
+        .col
+            ul.list-group.list-group-flush
+                each tournoi, i in tournois
+                    li.list-group-item.align-items-center.container-fluid
+                        .row.d-flex.justify-content-between-md
+                            .col-md
+                                p #{i+1} - #{tournoi.nom} : #{tournoi.datef}
+
+                            .col-md-3.d-flex.justify-content-center.align-items-center
+                                .btn-toolbar.mr-2(role='toolbar', aria-label='Toolbar with button groups')
+                                    .btn-group(role='group', aria-label='group')
+                                        a.btn.btn-success.btn-sm(href="joueurs/" + joueur._id  role="button") Modifier
+                                        button.btn.btn-danger.btn-sm(type='button' data-toggle='modal' data-target='#deleteModal' data-type='joueurs' data-id=joueur._id data-nom=joueur.nom+' '+joueur.prenom)
+                                            | Supprimer
+                                        a.btn.btn-info.btn-sm(href="/joueur/" + joueur._id role="button") Détail
+                else
+                    li.list-group-item.d-flex.justify-content-center.align-items-center
+                        h2 Pas de Joueurs
+
+    include ../modals/delete

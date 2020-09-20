@@ -3,6 +3,7 @@ const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const methodOverride = require('method-override')
 const conf = require('./config')
 
 /**
@@ -36,6 +37,9 @@ app.use(session({
 
 // Gestion des retours d'erreurs pour l'utilisateur
 app.use(require('./middlewares/retour'))
+
+// Redirection de la méthode pour PUT ou DELETE
+app.use(methodOverride('_method'))
 
 // Intégration des routes
 app.use(require('./routes/joueurs'))

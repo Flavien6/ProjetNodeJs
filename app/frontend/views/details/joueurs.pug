@@ -3,10 +3,12 @@ extends ../../struct/layout
 append content
     .jumbotron
         h2.display-3 #{joueur.prenom} #{joueur.nom}
-        p.lead Né le #{joueur.dateNaiss}
-        adress.lead mail : #{joueur.mail}
+        p.date-formate.lead Né le #{joueur.datef}
+        adress.lead Mail : #{joueur.mail}
         
         hr.my-4
         p Description matchs
-        p.lead
-            a.btn.btn-primary.btn-lg(href='#', role='button') Inscrire
+        .lead.container
+            .row.d-flex.justify-content-between
+                a.col-md-3.btn.btn-primary.btn-lg(href='#' role='button') Inscrire
+                a.col-md-3.btn.btn-secondary.btn-lg(href='/joueurs' role='button') Retour
