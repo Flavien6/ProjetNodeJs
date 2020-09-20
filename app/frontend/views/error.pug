@@ -1,9 +1,10 @@
 extends ../struct/layout
 
-//-append content
+append content
     .row
-        .card.text-white.bg-danger.mb-3.col-md
-            .card-header.d-flex.justify-content-center
-                h2.text-white #{status}
-            .card-body
-                pre.card-text.text-white #{msg}
+        .col
+            .card.bg-danger.mb-3.p-4
+                .card-header.d-flex.justify-content-center
+                    h2.text-white #{status}
+                .card-body
+                    pre.card-text.text-white #{msg}

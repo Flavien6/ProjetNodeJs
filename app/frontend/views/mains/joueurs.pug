@@ -2,19 +2,24 @@ extends ../../struct/layout
 
 append content
     .row.justify-content-center
-        .col-md-auto.mb-4
+        .col-auto.mb-4
             a.btn.btn-primary(href='joueurs/new' role="button") Ajouter
 
     .row
-        .col-md-12
+        .col
             ul.list-group.list-group-flush
                 each joueur, i in joueurs
-                    li.list-group-item.d-flex.justify-content-between.lh-condensed
-                        h2 #{i+1} - #{joueur.nom} #{joueur.prenom}
-                        .btn-group(role="group")
-                            a.btn.btn-success(href="joueurs/" + joueur._id  role="button") Modifier
-                            a.btn.btn-danger(href="#" role="button") Supprimer
-                            a.btn.btn-info(href="#" role="button") Détail
+                    li.list-group-item.align-items-center.container-fluid
+                        .row.d-flex.justify-content-between-md
+                            .col-md
+                                p #{i+1} - #{joueur.nom} #{joueur.prenom}
+
+                            .col-md-3.d-flex.justify-content-center.align-items-center
+                                .btn-toolbar.mr-2(role='toolbar', aria-label='Toolbar with button groups')
+                                    .btn-group(role='group', aria-label='group')
+                                        a.btn.btn-success.btn-sm(href="joueurs/" + joueur._id  role="button") Modifier
+                                        a.btn.btn-danger.btn-sm(href="" role="button") Supprimer
+                                        a.btn.btn-info.btn-sm(href="/joueur/" + joueur._id role="button") Détail
                 else
-                    li.list-group-item.d-flex.justify-content-center
+                    li.list-group-item.d-flex.justify-content-center.align-items-center
                         h2 Pas de Joueurs

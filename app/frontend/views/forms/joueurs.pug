@@ -3,25 +3,25 @@ extends ../../struct/layout
 append content
     form.container-fluid(action="/joueurs" method="POST" id="joueursForm")
         .row.justify-content-center
-            .col-8.form-group
+            .col-md-8.form-group
                 label(for="nom") Nom
-                input#nom(type="text" class="form-control" name="nom" value=joueur.nom)
+                input#nom(type="text" class="form-control" name="nom" value=joueur.nom required)
 
         .row.justify-content-center
-            .col-8.form-group
+            .col-md-8.form-group
                 label(for="prenom") Prenom
-                input#prenom(type="text" class="form-control" name="prenom" value=joueur.prenom)
+                input#prenom(type="text" class="form-control" name="prenom" value=joueur.prenom required)
 
         .row.justify-content-center
-            .col-8.form-group
+            .col-md-8.form-group
                 label(for="dateNaiss") Date de naissance
-                input#dateNaiss(type="date" class="form-control" name="dateNaiss" value=joueur.dateNaiss)
+                input#dateNaiss(type="date" class="form-control" name="dateNaiss" value=joueur.dateNaiss required)
 
         .row.justify-content-center
-            .col-8.form-group
+            .col-md-8.form-group
                 label(for="mail") Mail
                 input#mail(type="text" class="form-control" name="mail" value=joueur.mail)
 
         .row.justify-content-center
-            .col-8
+            .col-auto
                 button.btn.btn-primary(type="submit") Envoyer

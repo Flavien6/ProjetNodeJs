@@ -6,21 +6,27 @@ html
         include header
 
         main.flex-shrink-0(role="main" style="padding-top: 100px")
-            //-if locals.retour
+            // Retour d'erreur
+            if locals.retour
                 aside.container
                     .row.justify-content-center
                         if retour.error
                             .col-md.alert.alert-dismissible.alert-danger
+                                button.close(type='button', data-dismiss='alert') ×
                                 p=retour.error
                         else if retour.success
                             .col-md.alert.alert-dismissible.alert-success
+                                button.close(type='button', data-dismiss='alert') ×
                                 p=retour.success
 
+            // Bloc principal
             .container
+                // Titre
                 block title
                     .row.justify-content-center
-                        .col-md.p-4
+                        .col-auto.p-4
                             h1=title
+                // Contenu
                 block content
 
         include footer

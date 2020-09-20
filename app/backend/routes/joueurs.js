@@ -13,7 +13,7 @@ router.route('/joueurs')
         res.render('mains/joueurs', { title, joueurs })
     })
     .catch(err => {
-        req.retour('error', err)
+        req.retour('error', err.toString())
         res.redirect('/')
     })
 })
@@ -25,7 +25,7 @@ router.route('/joueurs')
         res.redirect('/joueurs')
     })
     .catch(err => {
-        req.retour('error', err)
+        req.retour('error', err.toString())
         res.redirect('/joueurs')
     })
 })
@@ -40,7 +40,7 @@ router.route('/joueurs/:id')
         res.render('forms/joueurs', { title, joueur })
     })
     .catch(err => {
-        req.retour('error', err)
+        req.retour('error', err.toString())
         res.redirect('/joueurs')
     })
 }, (req, res) => {
@@ -48,5 +48,20 @@ router.route('/joueurs/:id')
 })
 // .put(joueurs.update)
 // .delete(joueurs.remove)
+
+router.route('/joueur/:id')
+.get((req, res, next) => {
+    let id = req.params.id
+
+    Joueur.findById(id).exec()
+    .then(joueur => {
+        res.render('details/joueurs', { title, joueur })
+    })
+    .catch(err => {
+        req.retour('error', err.toString())
+        res.redirect('/joueurs')
+    })
+})
+
 
 module.exports = router
