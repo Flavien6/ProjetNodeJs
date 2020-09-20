@@ -13,6 +13,9 @@ router.route('/tournois')
 .get((req, res) => {
     Tournoi.find()
     .then(tournois => {
+        tournois.forEach(elt => {
+            elt.datef = moment(elt.date).format('LL')
+        })
         res.render('mains/tournois', { title, tournois })
     })
     .catch(err => {
@@ -21,10 +24,15 @@ router.route('/tournois')
     })
 })
 .post((req, res) => {
-    let joueur = new Tournoi(req.body)
-    joueur.save()
+    let tournoi
+    if(!req.body.nbRondes) req.body.nbRondes = 0
+    req.body.isOpen = false
+    req.body.isStart = false
+    req.body.isFin = false
+    tournoi = new Tournoi(req.body)
+    tournoi.save()
     .then(() => {
-        req.retour('success', 'Ajout du joueur avec succés')
+        req.retour('success', 'Ajout du tournoi avec succés')
         res.redirect('/tournois')
     })
     .catch(err => {
@@ -40,56 +48,75 @@ router.route('/tournois/:id')
     if(id === 'new') return next()
 
     Tournoi.findById(id).exec()
-    .then(joueur => {
-        joueur.date = moment(joueur.dateNaiss).format('YYYY-MM-DD')
-        res.render('forms/tournois', { title, put: `/${joueur._id}?_method=PUT`, joueur })
+    .then(tournoi => {
+        tournoi.datef = moment(tournoi.date).format('YYYY-MM-DD')
+        res.render('forms/tournois', { title, put: `/${tournoi._id}?_method=PUT`, tournoi })
     })
     .catch(err => {
         req.retour('error', err.toString())
         res.redirect('/tournois')
     })
 }, (req, res) => {
-    res.render('forms/tournois', { title, put: '', joueur: {} })
+    res.render('forms/tournois', { title, put: '', tournoi: {} })
 })
-.put((req, res) => {
-    let id = req.params.id
-    Tournoi.findById(id).exec()
-    .then(joueur => {
-        for(i in req.body) joueur[i] = req.body[i]
-        return joueur.save()
-    })
-    .then(() => {
-        req.retour('success', 'Tournoi mis à jour')
-        res.redirect('/tournois')
-    })
-    .catch(err => {
+.put(async (req, res) => {
+    try {
+        let id = req.params.id
+        let tournoi = await Tournoi.findById(id).exec()
+        if(!tournoi.isOpen) {
+            if(!req.body.nbRondes) req.body.nbRondes = 0
+            req.body.isOpen = false
+            req.body.isStart = false
+            req.body.isFin = false
+            for(i in req.body) tournoi[i] = req.body[i]
+            await tournoi.save()
+            req.retour('success', 'Tournoi mis à jour')
+            res.redirect('/tournois')
+        }
+        else {
+            req.retour('error', 'Tournoi commencé')
+            res.redirect('/tournois')
+        }
+    }
+    catch(err) {
         req.retour('error', err.toString())
         res.redirect('/tournois')
-    })
+    }
 })
-.delete((req, res) => {
-    let _id = req.params.id
-
-    Tournoi.deleteOne({ _id }).exec()
-    .then(() => {
-        req.retour('success', 'Tournoi supprimé')
-        res.redirect('/tournois')
-    })
-    .catch(err => {
+.delete(async (req, res) => {
+    try {
+        let _id = req.params.id
+        let tournoi = await Tournoi.findById(_id).exec()
+        if(!tournoi.isOpen) {
+            if(!req.body.nbRondes) req.body.nbRondes = 0
+            req.body.isOpen = false
+            req.body.isStart = false
+            req.body.isFin = false
+            for(i in req.body) tournoi[i] = req.body[i]
+            await Tournoi.deleteOne({ _id }).exec()
+            req.retour('success', 'Tournoi supprimé')
+            res.redirect('/tournois')
+        }
+        else {
+            req.retour('error', 'Tournoi commencé')
+            res.redirect('/tournois')
+        }
+    }
+    catch(err) {
         req.retour('error', err.toString())
         res.redirect('/tournois')
-    })
+    }
 })
 
 // Détail
-router.route('/joueur/:id')
+router.route('/tournoi/:id')
 .get((req, res) => {
     let id = req.params.id
 
     Tournoi.findById(id).exec()
-    .then(joueur => {
-        joueur.date = moment(joueur.dateNaiss).format('LL')
-        res.render('details/tournois', { title, joueur })
+    .then(tournoi => {
+        tournoi.datef = moment(tournoi.date).format('LL')
+        res.render('details/tournois', { title, tournoi })
     })
     .catch(err => {
         req.retour('error', err.toString())

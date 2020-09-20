@@ -1,5 +1,7 @@
 const express = require('express')
 const Joueur = require('../models/joueur')
+const Tournoi = require('../models/tournoi')
+const Participant = require('../models/participant')
 const moment = require('moment')
 moment.locale('fr')
 
@@ -83,18 +85,33 @@ router.route('/joueurs/:id')
 
 // Détail
 router.route('/joueur/:id')
-.get((req, res) => {
-    let id = req.params.id
+.get(async (req, res) => {
+    try {
+        let id = req.params.id
+        let joueur = await Joueur.findById(id).exec()
+        let tournois = await Tournoi.find().exec()
+        let inscriptions = await Participant.find({ joueur: joueur._id }).populate('tournoi').exec()
 
-    Joueur.findById(id).exec()
-    .then(joueur => {
         joueur.datef = moment(joueur.dateNaiss).format('LL')
-        res.render('details/joueurs', { title, joueur })
-    })
-    .catch(err => {
+
+        tournois.forEach(elt => {
+            elt.datef = moment(elt.date).format('LL')
+
+            if(elt.isStart) tournois.splice(tournois.indexOf(elt), 1)
+        })
+        inscriptions.forEach(elt => {
+            let i = tournois.findIndex(tournoi => tournoi.__id === elt.tournoi.__id )
+            if(i > -1) tournois.splice(i, 1)
+
+            elt.tournoi.datef = moment(elt.tournoi.date).format('LL')
+        })
+
+        res.render('details/joueurs', { title, joueur, inscriptions, tournois })
+    }
+    catch(err) {
         req.retour('error', err.toString())
         res.redirect('/joueurs')
-    })
+    }
 })
 
 

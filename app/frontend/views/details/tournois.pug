@@ -1,0 +1,12 @@
+extends ../../struct/layout
+
+append content
+    .jumbotron
+        h2.display-3 #{tournoi.nom} - #{tournoi.datef}
+        
+        hr.my-4
+        p Description matchs
+        .lead.container
+            .row.d-flex.justify-content-between
+                a.col-md-3.btn.btn-primary.btn-lg(href='#' role='button') Inscrire
+                a.col-md-3.btn.btn-secondary.btn-lg(href='/tournois' role='button') Retour

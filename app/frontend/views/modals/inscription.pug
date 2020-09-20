@@ -1,0 +1,16 @@
+#inscriptionModal.modal.fade(tabindex='-1', aria-labelledby='inscriptionModalLabel', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+        form.modal-content(method='POST', action='/inscription/'+joueur._id)
+            .modal-header
+                h2#inscriptionModalLabel.modal-title Inscription
+                button.close(type='button', data-dismiss='modal', aria-label='Annuler')
+                    span(aria-hidden='true') ×
+            .modal-body.form-group
+                label(for='tournoi') Tournois
+                select#tournoi.custom-select(name="tournoi" required)
+                    option(value='' selected) Choisir un tournoi
+                    each tournoi in tournois
+                        option(value=tournoi._id) #{tournoi.nom} - #{tournoi.datef}
+            .modal-footer
+                button.btn.btn-secondary(type='button', data-dismiss='modal') Annuler
+                button.btn.btn-primary(type='submit') Inscrire

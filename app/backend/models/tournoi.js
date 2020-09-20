@@ -19,6 +19,8 @@ const tournoiSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    isOpen: Boolean,
+    isStart: Boolean,
     isFin: Boolean
 })
 

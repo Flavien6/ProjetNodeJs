@@ -1,0 +1,32 @@
+extends ../../struct/layout
+
+append content
+    form.container-fluid(action="/tournois"+put method="POST" id="tournoisForm")
+        .row.justify-content-center
+            .col-md-8.form-group
+                label(for="nom") Nom
+                input#nom(type="text" class="form-control" name="nom" value=tournoi.nom required)
+
+        .row.justify-content-center
+            .col-md-8.form-group
+                label(for="dateNaiss") Date
+                input#dateNaiss(type="date" class="form-control" name="date" value=tournoi.datef required)
+
+        .row.justify-content-center
+            .col-md-8.form-group
+                label(for='systeme') Système
+                select#systeme.custom-select(name="systeme" required)
+                    option(value='' selected=(tournoi.systeme == null? true : false)) Choisir un système
+                    option(value='directe' selected=(tournoi.systeme == 'directe'? true : false)) Elimination directe
+                    option(value='suisse' selected=(tournoi.systeme == 'suisse'? true : false)) Rondes suisses
+
+        .row#ronde.justify-content-center.d-none
+            .col-md-8.form-group
+                label(for="nbRondes") Nombre de rondes
+                input#nbRondes(type="number" class="form-control" name="nbRondes" value=tournoi.nbRondes min="6" max="10")
+
+        .row.justify-content-between.p-2
+            .col-md-2
+            button#envoyer.col-md-3.btn.btn-primary(type="submit") Envoyer
+            a.col-md-3.btn.btn-secondary.btn-lg(href='/tournois' role='button') Retour
+            .col-md-2

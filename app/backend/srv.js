@@ -43,8 +43,8 @@ app.use(methodOverride('_method'))
 
 // Intégration des routes
 app.use(require('./routes/joueurs'))
-app.use(require('./routes/suivis'))
 app.use(require('./routes/tournois'))
+app.use(require('./routes/participants'))
 app.use(require('./routes/home'))
 
 // Route par défaut représentant toutes les routes

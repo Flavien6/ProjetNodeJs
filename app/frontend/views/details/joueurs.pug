@@ -3,12 +3,39 @@ extends ../../struct/layout
 append content
     .jumbotron
         h2.display-3 #{joueur.prenom} #{joueur.nom}
-        p.date-formate.lead Né le #{joueur.datef}
+        p.lead Né le #{joueur.datef}
         adress.lead Mail : #{joueur.mail}
         
         hr.my-4
-        p Description matchs
+
+        ul.list-group.p-4
+            if inscriptions.length > 0
+                li.list-group-item.align-items-center.container-fluid
+                        .row.d-flex.justify-content-between
+                            .col-md
+                                h3 Tournois
+                            .col-md
+                                span.mt-1.badge.badge-dark.badge-pill Score
+
+            each inscr in inscriptions
+                li.list-group-item.align-items-center.container-fluid
+                        .row.d-flex.justify-content-between
+                            .col-md
+                                p.mt-1 #{inscr.tournoi.nom} - #{inscr.tournoi.datef}
+                            .col-md.container-fluid
+                                .row
+                                    .col-md
+                                        span.mt-1.badge.badge-dark.badge-pill=inscr.pts
+                                    .col-md.mt-2.mt-md-0
+                                        button.btn.btn-danger.btn-sm(type='button' data-toggle='modal' data-target='#deleteModal' data-type='inscription' data-id=inscr._id data-nom=inscr.tournoi.nom+' - '+inscr.tournoi.datef) ×
+            else
+                li.list-group-item.d-flex.justify-content-center.align-items-center
+                    h3 Inscrit à aucun tournoi
+
         .lead.container
             .row.d-flex.justify-content-between
-                a.col-md-3.btn.btn-primary.btn-lg(href='#' role='button') Inscrire
+                button.col-md-3.btn.btn-primary.btn-lg(type='button' data-toggle='modal' data-target='#inscriptionModal') Inscrire
                 a.col-md-3.btn.btn-secondary.btn-lg(href='/joueurs' role='button') Retour
+
+        include ../modals/inscription
+        include ../modals/delete
