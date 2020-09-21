@@ -115,7 +115,10 @@ router.route('/tournoi/:id')
 .get(async (req, res) => {
     try {
         let id = req.params.id
-        let tournoi = await Tournoi.findById(id).exec()
+        let tournoi = await Tournoi.findById(id).populate({
+            path: 'vainqueur',
+            populate: { path: 'joueur' }
+          }).exec()
         let participants = await Participant.find({ tournoi : id }).populate('joueur').exec()
         let matchs = await Match.find({ tournoi: id }).populate('participants').exec()
         for(let i = 0; i < matchs.length; i++) {

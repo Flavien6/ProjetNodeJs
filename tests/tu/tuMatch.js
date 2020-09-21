@@ -4,7 +4,7 @@ let expect = require('must')
 // Offre à n'importe quel élement la fonction must pour les tests
 require('must/register')
 // Inclusion de la fonction à tester
-let match = require('../app/backend/processus/match')
+let match = require('../../app/backend/processus/match')
 
 describe('Initialisation d\' une ronde suisse', () => {
     it('Groupe est différent d\'un tableau', () => {
@@ -158,13 +158,19 @@ describe('Détermination du nombre de ronde en fonction du nombre de participant
         nb.must.equal(5)
     })
 })
+
 describe('Détermination des prochains affrontements pour une ronde suisse', () => {
 
-    it('déterminer les affrontements d\'un groupe de 6 personnes', () => {
+    it('déterminer les affrontements d\'un groupe de 4 personnes', () => {
         let groupes = match.determineAffrontements([
-            { name: 'j1', pts: 1,  }
+            { name: 'j1', pts: 1, adversaires: ['j4'], couleurs : {n:1, b:0}},
+            { name: 'j2', pts: 0, adversaires: ['j3'], couleurs : {n:0, b:1} },
+            { name: 'j3', pts: 1, adversaires: ['j2'], couleurs : {n:1, b:0}},
+            { name: 'j4', pts: 0, adversaires: ['j1'], couleurs : {n:0, b:1}}
         ])
-        joueur.must.have.property('pts')
-        joueur.pts.must.equal(3)
+
+        groupes.must.length(2)
+        groupes[0].must.length(2)
+        groupes[1].must.length(2)
     })
 })

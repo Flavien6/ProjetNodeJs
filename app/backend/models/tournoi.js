@@ -1,5 +1,6 @@
 // Inclusion des librairies
 const mongoose = require('mongoose')
+const ObjectId = mongoose.Schema.Types.ObjectId
 
 // Schéma Tournoi
 const tournoiSchema = mongoose.Schema({
@@ -18,6 +19,10 @@ const tournoiSchema = mongoose.Schema({
     nbRondes: {
         type: Number,
         required: true
+    },
+    vainqueur: {
+        type: ObjectId,
+        ref: 'Participant'
     },
     rondeEnCours: Number,
     nbParticipants: Number,

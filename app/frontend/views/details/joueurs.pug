@@ -28,6 +28,7 @@ append content
                                         span.mt-1.badge.badge-dark.badge-pill=inscr.pts
                                     .col-md.mt-2.mt-md-0
                                         button.btn.btn-danger.btn-sm(type='button' data-toggle='modal' data-target='#deleteModal' data-type='inscription' data-id=inscr._id data-nom=inscr.tournoi.nom+' - '+inscr.tournoi.datef) ×
+                                        a.btn.btn-info.btn-sm(role='button' href='/tournoi/'+inscr.tournoi._id) *
             else
                 li.list-group-item.d-flex.justify-content-center.align-items-center
                     h3 Inscrit à aucun tournoi

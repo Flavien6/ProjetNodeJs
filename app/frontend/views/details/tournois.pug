@@ -7,7 +7,10 @@ append content
         .row
             .col-md
                 h2.display-3 #{tournoi.nom} - #{tournoi.datef}
-        
+        if(tournoi.vainqueur)
+            .row
+                .col-md
+                    span Vainqueur : #{tournoi.vainqueur.joueur.nom} #{tournoi.vainqueur.joueur.prenom}
         hr.my-4
         h3 Matchs
 
@@ -110,15 +113,18 @@ append content
                                                 else
                                                     .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') GHOST
                                             .col-md-2.my-2.my-md-1
+                                                - let p1Nom = ''
+                                                - let p2Nom = ''
+
                                                 if(p1.joueur)
-                                                    - let p1Nom = p1.joueur.nom + ' ' + p1.joueur.prenom
+                                                    - p1Nom = p1.joueur.nom + ' ' + p1.joueur.prenom
                                                 else
-                                                    - let p1Nom = 'GHOST'
+                                                    - p1Nom = 'GHOST'
 
                                                 if(p2.joueur)
-                                                    - let p2Nom = p2.joueur.nom + ' ' + p2.joueur.prenom
+                                                    - p2Nom = p2.joueur.nom + ' ' + p2.joueur.prenom
                                                 else
-                                                    - let p2Nom = 'GHOST'
+                                                    - p2Nom = 'GHOST'
 
                                                 if(!match.vainqueur)
                                                     button.btn.btn-dark.btn-sm(type='button' data-toggle='modal' data-target='#resultModal' data-id=match._id data-p1id=p1._id data-p1nom=p1Nom data-p2id=p2._id data-p2nom=p2Nom) Resultats

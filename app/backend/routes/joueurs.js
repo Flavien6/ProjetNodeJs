@@ -93,17 +93,17 @@ router.route('/joueur/:id')
         let inscriptions = await Participant.find({ joueur: joueur._id }).populate('tournoi').exec()
 
         joueur.datef = moment(joueur.dateNaiss).format('LL')
-
         tournois.forEach(elt => {
             elt.datef = moment(elt.date).format('LL')
-
+        })
+        tournois.forEach(elt => {
             if(elt.isStart) tournois.splice(tournois.indexOf(elt), 1)
         })
         inscriptions.forEach(elt => {
-            let i = tournois.findIndex(tournoi => tournoi.__id === elt.tournoi.__id )
-            if(i > -1) tournois.splice(i, 1)
-
             elt.tournoi.datef = moment(elt.tournoi.date).format('LL')
+
+            let i = tournois.findIndex(tournoi => tournoi._id.toString() == elt.tournoi._id.toString())
+            if(i > -1) tournois.splice(i, 1)
         })
 
         res.render('details/joueurs', { title, joueur, inscriptions, tournois })

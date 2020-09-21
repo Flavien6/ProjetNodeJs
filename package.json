@@ -28,5 +28,8 @@
     "mongoose": "^5.10.5",
     "must": "^0.13.4",
     "pug": "^3.0.0"
+  },
+  "devDependencies": {
+    "cypress": "^5.2.0"
   }
 }

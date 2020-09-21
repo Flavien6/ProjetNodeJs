@@ -79,7 +79,6 @@ router.route('/match/:id')
         let participants = match.participants.filter(elt => elt.joueur)
         let index = participants.findIndex(elt => vainqueur === elt._id)
         if(index === -1) vainqueur = participants[0]._id
-
         match.vainqueur = vainqueur
         match.save()
 
@@ -87,10 +86,13 @@ router.route('/match/:id')
         joueurV.pts = joueurV.pts + 1
         joueurV.save()
         
-        let indexPerdant = participants.findIndex(elt => vainqueur !== elt._id)
-        let joueurP = await Participant.findById(participants[indexPerdant]._id).exec()
-        joueurP.isElimine = true
-        joueurP.save()
+        let indexPerdant = match.participants.findIndex(elt => vainqueur.toString() !== elt._id.toString())
+
+        if(indexPerdant !== -1) {
+            let joueurP = await Participant.findById(match.participants[indexPerdant]._id).exec()
+            joueurP.isElimine = true
+            joueurP.save()
+        }
 
         req.retour('success', 'Match terminé')
         res.redirect(`/tournoi/${match.tournoi._id}`)
@@ -127,6 +129,7 @@ router.route('/match/validate/:id')
         let _id = req.params.id
         let tournoi = await Tournoi.findById(_id).exec()
         let matchs = await Match.find({ tournoi: tournoi._id, ronde: tournoi.rondeEnCours }).exec()
+        let vainqueur = await Participant.find({ tournoi: tournoi._id }).sort({pts:-1}).limit(1) 
         let ok = true
         if(matchs.length > 0) {
             matchs.forEach(elt => {
@@ -138,6 +141,9 @@ router.route('/match/validate/:id')
         if(ok) {
             if(tournoi.rondeEnCours === tournoi.nbRondes) tournoi.isFin = true
             else tournoi.rondeEnCours = tournoi.rondeEnCours + 1
+            if(tournoi.isFin) {
+                tournoi.vainqueur = vainqueur[0]._id
+            }
             await tournoi.save()
             req.retour('success', 'Ronde Terminé')
             res.redirect(`/tournoi/${_id}`)
@@ -146,6 +152,59 @@ router.route('/match/validate/:id')
             req.retour('error', 'Résultats non renseignés')
             res.redirect(`/tournoi/${_id}`)
         }
+    }
+    catch(err) {
+        req.retour('error', err.toString())
+        res.redirect('/tournois')
+    }
+})
+
+router.route('/match/auto/:id')
+.get(async (req, res) => {
+    try {
+        let _id = req.params.id
+        let tournoi = await Tournoi.findById(_id).exec()
+        let participants = await Participant.find({ tournoi: tournoi._id }).exec()
+        let matchsOk = await Match.find({ tournoi: tournoi._id }).exec()
+        if(tournoi.rondeEnCours === 1 && !tournoi.isFin && matchsOk.length < tournoi.nbRondes) {
+            await Match.deleteMany({ tournoi: tournoi._id }).exec()
+            let matchs = processmatch.initialiser(participants)
+
+            matchs.forEach((elt, i) => {
+                elt.forEach((participant, y) => {
+                    if(participant.name) {
+                        participant.name.couleurs.enCours = participant.couleur
+                        matchs[i][y] = participant.name
+                    }
+                    else {
+                        let part = new Participant({
+                            tournoi: tournoi._id
+                        })
+                        matchs[i][y] = part
+                    }
+                })
+            })
+
+            for(let i = 0; i < matchs.length; i++) {
+                await matchs[i][0].save()
+                await matchs[i][1].save()
+                let match = new Match({
+                    tournoi: tournoi._id,
+                    ronde: 1,
+                    participants: [matchs[i][0]._id, matchs[i][1]._id]
+                })
+                await match.save()
+            }
+
+            if(!tournoi.isStart) {
+                tournoi.isStart = true
+                if(tournoi.nbRondes === 0) tournoi.nbRondes = processmatch.nombreRondes(tournoi.nbParticipants)
+                await tournoi.save()
+            }
+        }
+
+        req.retour('success', 'Auto')
+        res.redirect(`/tournoi/${_id}`)
     }
     catch(err) {
         req.retour('error', err.toString())

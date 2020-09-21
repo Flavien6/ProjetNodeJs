@@ -71,10 +71,5 @@ exports.nombreRondes = nbParticipants => {
 
 // Détermine les prochains affrontements à partir d'un tableaux de joueur et de leurs points
 exports.determineAffrontements = groupe => {
-
-}
-
-// Fin de partie, divise le groupe en plusieurs groupe dans l'ordre de leurs points
-exports.finir = groupe => {
-
+    return [[1,2][1,2]]
 }
