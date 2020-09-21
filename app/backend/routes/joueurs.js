@@ -69,18 +69,24 @@ router.route('/joueurs/:id')
         res.redirect('/joueurs')
     })
 })
-.delete((req, res) => {
-    let _id = req.params.id
-
-    Joueur.deleteOne({ _id }).exec()
-    .then(() => {
-        req.retour('success', 'Joueur supprimé')
-        res.redirect('/joueurs')
-    })
-    .catch(err => {
+.delete(async (req, res) => {
+    try {
+        let _id = req.params.id
+        let participants = await Participant.find({ joueur: _id }).exec()
+        if(participants.length === 0) {
+            await Joueur.deleteOne({ _id }).exec()
+            req.retour('success', 'Joueur supprimé')
+            res.redirect('/joueurs')
+        }
+        else {
+            req.retour('error', 'Joueur déjà inscrit')
+            res.redirect('/joueurs')
+        }
+    }
+    catch(err) {
         req.retour('error', err.toString())
         res.redirect('/joueurs')
-    })
+    }
 })
 
 // Détail

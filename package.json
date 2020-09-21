@@ -30,6 +30,7 @@
     "pug": "^3.0.0"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^7.0.0",
     "cypress": "^5.2.0"
   }
 }
