@@ -1,0 +1,13 @@
+#validateModal.modal.fade(tabindex='-1', aria-labelledby='validateModalLabel', aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+        .modal-content
+            .modal-header
+                h2#validateModalLabel.modal-title titre
+                button.close(type='button', data-dismiss='modal', aria-label='Annuler')
+                    span(aria-hidden='true') ×
+            .modal-body
+                p message
+            .modal-footer
+                button.btn.btn-secondary(type='button', data-dismiss='modal') Annuler
+                form(method='POST', action='')
+                    button.btn.btn-primary(type='submit') Oui

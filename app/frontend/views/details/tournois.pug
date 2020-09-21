@@ -1,12 +1,137 @@
 extends ../../struct/layout
 
 append content
-    .jumbotron
-        h2.display-3 #{tournoi.nom} - #{tournoi.datef}
+    - let i = 0
+    - let disabled = false
+    .jumbotron.container-fluid
+        .row
+            .col-md
+                h2.display-3 #{tournoi.nom} - #{tournoi.datef}
         
         hr.my-4
-        p Description matchs
+        h3 Matchs
+
+        ul.nav.nav-tabs
+            while i < tournoi.nbRondes
+                - i++
+                if i > tournoi.rondeEnCours
+                    - disabled = true
+
+                li.nav-item
+                    if i === 1
+                        a.nav-link.active(data-toggle='tab', href='#r'+i) #{i}
+                    else
+                        a.nav-link(class=disabled? 'disabled' : '' data-toggle='tab', href='#r'+i) #{i}
+
+        .tab-content.mb-3
+            - i=0
+            while i < tournoi.nbRondes
+                - i++
+                if i === 1
+                    .tab-pane.fade.active.show(id='r'+i)
+                        .list-group
+                            each match in matchs
+                                if(match.ronde === i)
+                                    - let p1 = match.participants[0]
+                                    - let p2 = match.participants[1]
+
+                                    if(p1.joueur)
+                                        - let c1 = p1.couleurs.enCours === 'b'? true : false
+                                    else
+                                        - let c1 = p2.couleurs.enCours === 'b'? false : true
+
+                                    if(p2.joueur)
+                                        - let c2 = p2.couleurs.enCours === 'b'? true : false
+                                    else
+                                        - let c2 = p1.couleurs.enCours === 'b'? false : true
+
+                                    .list-group-item.list-group-item-action.container-fluid
+                                        .row.d-flex.justify-content-between
+                                            .col-md-3.my-2.my-md-2
+                                                if(p1.joueur)
+                                                    .d-inline.alert(class=c1? 'alert-lignt' : 'alert-dark') #{p1.joueur.nom} #{p1.joueur.prenom}
+                                                else
+                                                    .d-inline.alert(class=c1? 'alert-lignt' : 'alert-dark') GHOST
+                                            .col-md-1.my-2.my-md-1
+                                                h4.d-inline.mx-3 VS
+                                            .col-md-3.my-2.my-md-2
+                                                if(p2.joueur)
+                                                    .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') #{p2.joueur.nom} #{p2.joueur.prenom}
+                                                else
+                                                    .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') GHOST
+                                            .col-md-2.my-2.my-md-1
+                                                - let p1Nom = ''
+                                                - let p2Nom = ''
+
+                                                if(p1.joueur)
+                                                    - p1Nom = p1.joueur.nom + ' ' + p1.joueur.prenom
+                                                else
+                                                    - p1Nom = 'GHOST'
+
+                                                if(p2.joueur)
+                                                    - p2Nom = p2.joueur.nom + ' ' + p2.joueur.prenom
+                                                else
+                                                    - p2Nom = 'GHOST'
+
+                                                if(!match.vainqueur)
+                                                    button.btn.btn-dark.btn-sm(type='button' data-toggle='modal' data-target='#resultModal' data-id=match._id data-p1id=p1._id data-p1nom=p1Nom data-p2id=p2._id data-p2nom=p2Nom) Resultats
+                                                    button.btn.btn-danger.btn-sm(type='button' data-toggle='modal' data-target='#deleteModal' data-type='match' data-id=match._id data-nom='Match') ×
+
+                else
+                    .tab-pane.fade(id='r'+i)
+                        .list-group
+                            each match in matchs
+                                if(match.ronde === i)
+                                    - let p1 = match.participants[0]
+                                    - let p2 = match.participants[1]
+
+                                    if(p1.joueur)
+                                        - let c1 = p1.couleurs.enCours === 'b'? true : false
+                                    else
+                                        - let c1 = p2.couleurs.enCours === 'b'? false : true
+
+                                    if(p2.joueur)
+                                        - let c2 = p2.couleurs.enCours === 'b'? true : false
+                                    else
+                                        - let c2 = p1.couleurs.enCours === 'b'? false : true
+
+                                    .list-group-item.list-group-item-action.container-fluid
+                                        .row.d-flex.justify-content-between
+                                            .col-md-3.my-2.my-md-2
+                                                if(p1.joueur)
+                                                    .d-inline.alert(class=c1? 'alert-lignt' : 'alert-dark') #{p1.joueur.nom} #{p1.joueur.prenom}
+                                                else
+                                                    .d-inline.alert(class=c1? 'alert-lignt' : 'alert-dark') GHOST
+                                            .col-md-1.my-2.my-md-1
+                                                h4.d-inline.mx-3 VS
+                                            .col-md-3.my-2.my-md-2
+                                                if(p2.joueur)
+                                                    .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') #{p2.joueur.nom} #{p2.joueur.prenom}
+                                                else
+                                                    .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') GHOST
+                                            .col-md-2.my-2.my-md-1
+                                                if(p1.joueur)
+                                                    - let p1Nom = p1.joueur.nom + ' ' + p1.joueur.prenom
+                                                else
+                                                    - let p1Nom = 'GHOST'
+
+                                                if(p2.joueur)
+                                                    - let p2Nom = p2.joueur.nom + ' ' + p2.joueur.prenom
+                                                else
+                                                    - let p2Nom = 'GHOST'
+
+                                                if(!match.vainqueur)
+                                                    button.btn.btn-dark.btn-sm(type='button' data-toggle='modal' data-target='#resultModal' data-id=match._id data-p1id=p1._id data-p1nom=p1Nom data-p2id=p2._id data-p2nom=p2Nom) Resultats
+                                                    button.btn.btn-danger.btn-sm(type='button' data-toggle='modal' data-target='#deleteModal' data-type='match' data-id=match._id data-nom='Match') ×
+
         .lead.container
             .row.d-flex.justify-content-between
-                a.col-md-3.btn.btn-primary.btn-lg(href='#' role='button') Inscrire
-                a.col-md-3.btn.btn-secondary.btn-lg(href='/tournois' role='button') Retour
+                button.col-md-2.btn.btn-primary.btn-lg(type='button' data-toggle='modal' data-target='#matchModal') Match
+                a.col-md-2.btn.btn-warning.btn-lg(href='/match/auto/'+tournoi._id role='button') Auto
+                button.col-md-2.btn.btn-dark.btn-lg(type='button' data-toggle='modal' data-target='#validateModal' data-type='match' data-id=tournoi._id data-nom='La ronde') Valider
+                a.col-md-2.btn.btn-secondary.btn-lg(href='/tournois' role='button') Retour
+    
+    include ../modals/match
+    include ../modals/result
+    include ../modals/delete
+    include ../modals/validate

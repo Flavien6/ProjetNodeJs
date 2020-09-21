@@ -1,5 +1,8 @@
 const express = require('express')
 const Tournoi = require('../models/tournoi')
+const Participant = require('../models/participant')
+const Match = require('../models/match')
+const Joueur = require('../models/joueur')
 const moment = require('moment')
 moment.locale('fr')
 
@@ -29,6 +32,8 @@ router.route('/tournois')
     req.body.isOpen = false
     req.body.isStart = false
     req.body.isFin = false
+    req.body.rondeEnCours = 1
+    req.body.nbParticipants = 0
     tournoi = new Tournoi(req.body)
     tournoi.save()
     .then(() => {
@@ -68,6 +73,8 @@ router.route('/tournois/:id')
             req.body.isOpen = false
             req.body.isStart = false
             req.body.isFin = false
+            req.body.rondeEnCours = 1
+            req.body.nbParticipants = 0
             for(i in req.body) tournoi[i] = req.body[i]
             await tournoi.save()
             req.retour('success', 'Tournoi mis à jour')
@@ -88,11 +95,6 @@ router.route('/tournois/:id')
         let _id = req.params.id
         let tournoi = await Tournoi.findById(_id).exec()
         if(!tournoi.isOpen) {
-            if(!req.body.nbRondes) req.body.nbRondes = 0
-            req.body.isOpen = false
-            req.body.isStart = false
-            req.body.isFin = false
-            for(i in req.body) tournoi[i] = req.body[i]
             await Tournoi.deleteOne({ _id }).exec()
             req.retour('success', 'Tournoi supprimé')
             res.redirect('/tournois')
@@ -110,18 +112,35 @@ router.route('/tournois/:id')
 
 // Détail
 router.route('/tournoi/:id')
-.get((req, res) => {
-    let id = req.params.id
+.get(async (req, res) => {
+    try {
+        let id = req.params.id
+        let tournoi = await Tournoi.findById(id).exec()
+        let participants = await Participant.find({ tournoi : id }).populate('joueur').exec()
+        let matchs = await Match.find({ tournoi: id }).populate('participants').exec()
+        for(let i = 0; i < matchs.length; i++) {
+            matchs[i].participants = await new Promise((res, rej) => {
+                Joueur.populate(matchs[i].participants, { path: 'joueur' }, (err, matchsFill) => {
+                    if(err) return rej(err)
+                    res(matchsFill)
+                })
+            })
+        }
 
-    Tournoi.findById(id).exec()
-    .then(tournoi => {
+        matchs.forEach(elt => {
+            elt.participants.forEach(element => {
+                let i = participants.findIndex(participant => participant._id.toString() == element._id.toString())
+                if((i > -1 && elt.ronde === tournoi.rondeEnCours) || element.isElimine) participants.splice(i, 1)
+            })
+        })
+
         tournoi.datef = moment(tournoi.date).format('LL')
-        res.render('details/tournois', { title, tournoi })
-    })
-    .catch(err => {
+        res.render('details/tournois', { title, tournoi, participants, matchs })
+    }
+    catch(err) {
         req.retour('error', err.toString())
         res.redirect('/tournois')
-    })
+    }
 })
 
 

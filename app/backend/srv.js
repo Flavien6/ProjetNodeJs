@@ -45,6 +45,7 @@ app.use(methodOverride('_method'))
 app.use(require('./routes/joueurs'))
 app.use(require('./routes/tournois'))
 app.use(require('./routes/participants'))
+app.use(require('./routes/matchs'))
 app.use(require('./routes/home'))
 
 // Route par défaut représentant toutes les routes

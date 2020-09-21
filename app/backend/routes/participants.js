@@ -20,13 +20,15 @@ router.route('/inscription/:id')
         if(!tournoi.isStart) {
             if(!tournoi.isOpen) {
                 tournoi.isOpen = true
-                await tournoi.save()
             }
+
+            tournoi.nbParticipants = tournoi.nbParticipants + 1
+            await tournoi.save()
 
             let participant = new Participant({
                 joueur: joueur._id,
                 tournoi: tournoi._id,
-                couleurs: { b: 0, n: 0 },
+                couleurs: { b: 0, n: 0, enCours: ''},
                 pts: 0,
                 isElimine: false,
                 adversaires: []

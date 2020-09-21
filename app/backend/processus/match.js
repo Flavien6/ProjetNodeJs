@@ -1,4 +1,4 @@
-const fn = require('../config/fonctions')
+const fn = require('./fonctions')
 
 // Initialise la ronde suisse, découpe le groupe de joueur en plusieurs groupes de deux
 // Tire au hasard une couleur au premier joueur et attributs des couleurs aux autres
@@ -7,9 +7,8 @@ exports.initialiser = groupe => {
 
     groupe = fn.randomize(groupe)
     let groupes = [], g1 = [], g2 = []
-    let couleurs = ['B', 'N']
-    let couleur1 = couleurs[Math.round(Math.random())]
-    let couleur2 = couleur1 === 'B'? 'N' : 'B'
+    let couleur1 = this.randCouleurs()
+    let couleur2 = couleur1 === 'b'? 'n' : 'b'
 
 
     for(let i = 0; i < groupe.length; i++) {
@@ -56,6 +55,18 @@ exports.calculPoints = (type, joueur) => {
         default:
             throw 'Type incorrect'
     }
+}
+
+// Détermine une couleur aléatoire
+exports.randCouleurs = () => {
+    let couleurs = ['b', 'n']
+    return couleurs[Math.round(Math.random())]
+}
+
+// Détermine le nmbre de ronde pour un match en elimination directe
+exports.nombreRondes = nbParticipants => {
+    if(typeof nbParticipants !== 'number') throw 'Le nombre de participants doit être un nombre'
+    return ((nbParticipants + (nbParticipants%2)) / 2)
 }
 
 // Détermine les prochains affrontements à partir d'un tableaux de joueur et de leurs points

@@ -14,7 +14,8 @@ const participantSchema = mongoose.Schema({
     },
     couleurs: {
         b: Number,
-        n: Number
+        n: Number,
+        enCours: String
     },
     pts: Number,
     isElimine: Boolean,

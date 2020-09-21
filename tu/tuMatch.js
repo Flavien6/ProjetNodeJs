@@ -4,18 +4,18 @@ let expect = require('must')
 // Offre à n'importe quel élement la fonction must pour les tests
 require('must/register')
 // Inclusion de la fonction à tester
-let rondeSuisse = require('../projet/serveur/processus/rondeSuisse')
+let match = require('../app/backend/processus/match')
 
 describe('Initialisation d\' une ronde suisse', () => {
     it('Groupe est différent d\'un tableau', () => {
-        expect(() => { rondeSuisse.initialiser(0) }).to.throw()
-        expect(() => { rondeSuisse.initialiser('') }).to.throw()
-        expect(() => { rondeSuisse.initialiser(null) }).to.throw()
-        expect(() => { rondeSuisse.initialiser(undefined) }).to.throw()
+        expect(() => { match.initialiser(0) }).to.throw()
+        expect(() => { match.initialiser('') }).to.throw()
+        expect(() => { match.initialiser(null) }).to.throw()
+        expect(() => { match.initialiser(undefined) }).to.throw()
     })
 
     it('Groupe de 4 joueurs', () => {
-        let groupes = rondeSuisse.initialiser(['j1', 'j2', 'j3', 'j4'])
+        let groupes = match.initialiser(['j1', 'j2', 'j3', 'j4'])
         
         groupes.must.length(2)
         groupes[0].must.length(2)
@@ -31,7 +31,7 @@ describe('Initialisation d\' une ronde suisse', () => {
     })
 
     it('Groupe de 5 joueurs', () => {
-        let groupes = rondeSuisse.initialiser(['j1', 'j2', 'j3', 'j4', 'j5'])
+        let groupes = match.initialiser(['j1', 'j2', 'j3', 'j4', 'j5'])
         
         groupes.must.length(3)
         groupes[0].must.length(2)
@@ -50,7 +50,7 @@ describe('Initialisation d\' une ronde suisse', () => {
     })
 
     it('Groupe de 40 joueurs', () => {
-        let groupes = rondeSuisse.initialiser(['j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10', 'j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10', 'j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10', 'j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10'])
+        let groupes = match.initialiser(['j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10', 'j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10', 'j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10', 'j1', 'j2', 'j3', 'j4', 'j5', 'j6', 'j7', 'j8', 'j9', 'j10'])
         
         groupes.must.length(20)
         groupes[0].must.length(2)
@@ -87,45 +87,81 @@ describe('Initialisation d\' une ronde suisse', () => {
 describe('Calcul des points pour une ronde suisse', () => {
 
     it('Type et joueurs obligatoires', () => {
-        expect(() => { rondeSuisse.calculPoints() }).to.throw()
+        expect(() => { match.calculPoints() }).to.throw()
     })
 
     it('Type inexistant', () => {
-        expect(() => { rondeSuisse.calculPoints('a', {}) }).to.throw()
-        expect(() => { rondeSuisse.calculPoints('', {}) }).to.throw()
-        expect(() => { rondeSuisse.calculPoints(null, {}) }).to.throw()
-        expect(() => { rondeSuisse.calculPoints(undefined, {}) }).to.throw()
+        expect(() => { match.calculPoints('a', {}) }).to.throw()
+        expect(() => { match.calculPoints('', {}) }).to.throw()
+        expect(() => { match.calculPoints(null, {}) }).to.throw()
+        expect(() => { match.calculPoints(undefined, {}) }).to.throw()
     })
 
     it('Joueur invalide', () => {
-        expect(() => { rondeSuisse.calculPoints('v', {}) }).to.throw()
-        expect(() => { rondeSuisse.calculPoints('v', null) }).to.throw()
-        expect(() => { rondeSuisse.calculPoints('v', undefined) }).to.throw()
+        expect(() => { match.calculPoints('v', {}) }).to.throw()
+        expect(() => { match.calculPoints('v', null) }).to.throw()
+        expect(() => { match.calculPoints('v', undefined) }).to.throw()
     })
 
     it('Vainqueur', () => {
-        let joueur = rondeSuisse.calculPoints('v', { name: 'j1', pts: 2 })
+        let joueur = match.calculPoints('v', { name: 'j1', pts: 2 })
         joueur.must.have.property('pts')
         joueur.pts.must.equal(3)
     })
 
     it('Perdant', () => {
-        let joueur = rondeSuisse.calculPoints('p', { name: 'j1', pts: 2 })
+        let joueur = match.calculPoints('p', { name: 'j1', pts: 2 })
         joueur.must.have.property('pts')
         joueur.pts.must.equal(2)
     })
 
     it('Egalité', () => {
-        let joueur = rondeSuisse.calculPoints('e', { name: 'j1', pts: 2 })
+        let joueur = match.calculPoints('e', { name: 'j1', pts: 2 })
         joueur.must.have.property('pts')
         joueur.pts.must.equal(2.5)
     })
 })
 
+describe('Détermination d\'une couleur aléatoire entre b et n', () => {
+    it('donne une couleur entre b et n', () => {
+        let couleur = match.randCouleurs()
+        couleur.must.match(/^[b,n]$/)
+    })
+})
+
+describe('Détermination du nombre de ronde en fonction du nombre de participants', () => {
+
+    it('Le nombre de participant est différent d\'un nombre', () => {
+        expect(() => { match.initialiser() }).to.throw()
+        expect(() => { match.initialiser('') }).to.throw()
+        expect(() => { match.initialiser(null) }).to.throw()
+        expect(() => { match.initialiser(undefined) }).to.throw()
+    })
+
+    it('Nombre de ronde pour 2 participants', () => {
+        let nb = match.nombreRondes(2)
+        nb.must.equal(1)
+    })
+
+    it('Nombre de ronde pour 4 participants', () => {
+        let nb = match.nombreRondes(4)
+        nb.must.equal(2)
+    })
+
+    it('Nombre de ronde pour 5 participants', () => {
+        let nb = match.nombreRondes(5)
+        nb.must.equal(3)
+    })
+
+    it('Nombre de ronde pour 10 participants', () => {
+        let nb = match.nombreRondes(10)
+        nb.must.equal(5)
+    })
+})
 describe('Détermination des prochains affrontements pour une ronde suisse', () => {
 
     it('déterminer les affrontements d\'un groupe de 6 personnes', () => {
-        let groupes = rondeSuisse.determineAffrontements([
+        let groupes = match.determineAffrontements([
             { name: 'j1', pts: 1,  }
         ])
         joueur.must.have.property('pts')
