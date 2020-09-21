@@ -1,6 +1,8 @@
 module.exports = {
     srv: {
-        port: 3000
+        port: 3000,
+        mail: 'admin@admin.fr',
+        pw: 'Admin123'
     },
     db: {
         host: '127.0.0.1',

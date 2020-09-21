@@ -1,0 +1,19 @@
+extends ../../struct/layout
+
+append content
+    form.container-fluid(action="/users"+put method="POST" id="usersForm")
+        .row.justify-content-center
+            .col-md-8.form-group
+                label(for="mail") Mail
+                input#mail(type="mail" class="form-control" name="mail" value=user.mail required)
+
+        .row.justify-content-center
+            .col-md-8.form-group
+                label(for="pw") Mot de passe
+                input#pw(type="password" class="form-control" name="pw" value=user.pw required)
+
+        .row.justify-content-between.p-2
+            .col-md-2
+            button.col-md-3.btn.btn-primary(type="submit") Envoyer
+            a.col-md-3.btn.btn-secondary.btn-lg(href='/users' role='button') Retour
+            .col-md-2

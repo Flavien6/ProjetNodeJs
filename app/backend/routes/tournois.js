@@ -54,8 +54,14 @@ router.route('/tournois/:id')
 
     Tournoi.findById(id).exec()
     .then(tournoi => {
-        tournoi.datef = moment(tournoi.date).format('YYYY-MM-DD')
-        res.render('forms/tournois', { title, put: `/${tournoi._id}?_method=PUT`, tournoi })
+        if(tournoi) {
+            tournoi.datef = moment(tournoi.date).format('YYYY-MM-DD')
+            res.render('forms/tournois', { title, put: `/${tournoi._id}?_method=PUT`, tournoi })
+        }
+        else {
+            req.retour('error', 'Tournoi inexistant')
+            res.redirect('/tournois')
+        }
     })
     .catch(err => {
         req.retour('error', err.toString())
@@ -126,26 +132,33 @@ router.route('/tournoi/:id')
             path: 'vainqueur',
             populate: { path: 'joueur' }
           }).exec()
-        let participants = await Participant.find({ tournoi : id }).populate('joueur').exec()
-        let matchs = await Match.find({ tournoi: id }).populate('participants').exec()
-        for(let i = 0; i < matchs.length; i++) {
-            matchs[i].participants = await new Promise((res, rej) => {
-                Joueur.populate(matchs[i].participants, { path: 'joueur' }, (err, matchsFill) => {
-                    if(err) return rej(err)
-                    res(matchsFill)
+        
+        if(tournoi) {
+            let participants = await Participant.find({ tournoi : id }).populate('joueur').exec()
+            let matchs = await Match.find({ tournoi: id }).populate('participants').exec()
+            for(let i = 0; i < matchs.length; i++) {
+                matchs[i].participants = await new Promise((res, rej) => {
+                    Joueur.populate(matchs[i].participants, { path: 'joueur' }, (err, matchsFill) => {
+                        if(err) return rej(err)
+                        res(matchsFill)
+                    })
+                })
+            }
+    
+            matchs.forEach(elt => {
+                elt.participants.forEach(element => {
+                    let i = participants.findIndex(participant => participant._id.toString() == element._id.toString())
+                    if((i > -1 && elt.ronde === tournoi.rondeEnCours) || element.isElimine) participants.splice(i, 1)
                 })
             })
+    
+            tournoi.datef = moment(tournoi.date).format('LL')
+            res.render('details/tournois', { title, tournoi, participants, matchs })
         }
-
-        matchs.forEach(elt => {
-            elt.participants.forEach(element => {
-                let i = participants.findIndex(participant => participant._id.toString() == element._id.toString())
-                if((i > -1 && elt.ronde === tournoi.rondeEnCours) || element.isElimine) participants.splice(i, 1)
-            })
-        })
-
-        tournoi.datef = moment(tournoi.date).format('LL')
-        res.render('details/tournois', { title, tournoi, participants, matchs })
+        else {
+            req.retour('error', 'Tournoi inexistant')
+            res.redirect('/tournois')
+        }
     }
     catch(err) {
         req.retour('error', err.toString())

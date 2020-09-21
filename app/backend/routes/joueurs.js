@@ -43,8 +43,14 @@ router.route('/joueurs/:id')
 
     Joueur.findById(id).exec()
     .then(joueur => {
-        joueur.datef = moment(joueur.dateNaiss).format('YYYY-MM-DD')
-        res.render('forms/joueurs', { title, put: `/${joueur._id}?_method=PUT`, joueur })
+        if(joueur) {
+            joueur.datef = moment(joueur.dateNaiss).format('YYYY-MM-DD')
+            res.render('forms/joueurs', { title, put: `/${joueur._id}?_method=PUT`, joueur })
+        }
+        else {
+            req.retour('error', 'Joueur inexistant')
+            res.redirect('/joueurs')
+        }
     })
     .catch(err => {
         req.retour('error', err.toString())

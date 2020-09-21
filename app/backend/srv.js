@@ -4,14 +4,15 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const methodOverride = require('method-override')
-const conf = require('./config')
+const { srv, db } = require('./config')
+const User = require('./models/users')
 
 /**
  * Configuration du serveur
  */
 
-const port = conf.srv.port || 3000
-const stringConnection = `mongodb://${conf.db.user}:${conf.db.pw}@${conf.db.host}:${conf.db.port}/${conf.db.name}`
+const port = srv.port || 3000
+const stringConnection = `mongodb://${db.user}:${db.pw}@${db.host}:${db.port}/${db.name}`
 
 // Déclaration de la variable d'utilisation d'ExpressJs
 let app = express()
@@ -41,7 +42,13 @@ app.use(require('./middlewares/retour'))
 // Redirection de la méthode pour PUT ou DELETE
 app.use(methodOverride('_method'))
 
+// Redirection authentification
+app.use(require('./middlewares/auth'))
+app.use(require('./middlewares/localAuth'))
+
 // Intégration des routes
+app.use(require('./routes/auth'))
+app.use(require('./routes/users'))
 app.use(require('./routes/joueurs'))
 app.use(require('./routes/tournois'))
 app.use(require('./routes/participants'))
@@ -62,7 +69,18 @@ exports.connexion = async () => {
     // Lancement du serveur
     try {
         await mongoose.connect(stringConnection, { useNewUrlParser: true, useUnifiedTopology: true })
-        console.log(`Connecté à la BDD (${conf.db.name}) sur l'adresse : ${conf.db.host}:${conf.db.port} - en tant que : ${conf.db.user}`)
+        console.log(`Connecté à la BDD (${db.name}) sur l'adresse : ${db.host}:${db.port} - en tant que : ${db.user}`)
+
+        let defaultUsr = await User.findOne({ mail:srv.mail }).exec()
+        if(defaultUsr === null) {
+            let user = new User({
+                mail: srv.mail,
+                pw: srv.pw
+            })
+            await user.save()
+            console.log(`Utilisateur par défaut créé - Mail : ${srv.mail}  Mot de passe : ${srv.pw}`)
+        }
+
         await app.listen(port)
         console.log(`Serveur sur écoute à l'adresse : http://127.0.0.1:${port}`)
     }

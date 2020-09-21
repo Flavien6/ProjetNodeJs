@@ -3,14 +3,10 @@ extends ../../struct/layout
 append content
     - let i = 0
     - let disabled = false
-    .jumbotron.container-fluid
-        .row
-            .col-md
-                h2.display-3 #{tournoi.nom} - #{tournoi.datef}
+    .jumbotron.overflow-hidden
+        h2.display-3 #{tournoi.nom} - #{tournoi.datef}
         if(tournoi.vainqueur)
-            .row
-                .col-md
-                    span Vainqueur : #{tournoi.vainqueur.joueur.nom} #{tournoi.vainqueur.joueur.prenom}
+            span Vainqueur : #{tournoi.vainqueur.joueur.nom} #{tournoi.vainqueur.joueur.prenom}
         hr.my-4
         h3 Matchs
 
@@ -37,6 +33,7 @@ append content
                                 if(match.ronde === i)
                                     - let p1 = match.participants[0]
                                     - let p2 = match.participants[1]
+                                    - let vainq = ''
 
                                     if(p1.joueur)
                                         - let c1 = p1.couleurs.enCours === 'b'? true : false
@@ -62,6 +59,13 @@ append content
                                                     .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') #{p2.joueur.nom} #{p2.joueur.prenom}
                                                 else
                                                     .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') GHOST
+                                            .col-md-3
+                                                if p1._id == match.vainqueur
+                                                    - vainq = p1.joueur.nom
+                                                else if p2._id == match.vainqueur
+                                                    - vainq = p2.joueur.nom
+
+                                                p.bg-success=vainq
                                             .col-md-2.my-2.my-md-1
                                                 - let p1Nom = ''
                                                 - let p2Nom = ''

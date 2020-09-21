@@ -1,0 +1,16 @@
+extends ../struct/layout
+
+append content
+    form.container-fluid(action="/auth" method="POST" id="authForm")
+        .row.justify-content-center
+            .col-md-8.form-group
+                label(for="login") Login
+                input#login(type="mail" class="form-control" name="login" value='' required)
+
+        .row.justify-content-center
+            .col-md-8.form-group
+                label(for="pw") Mot de passe
+                input#pw(type="password" class="form-control" name="pw" value='' required)
+
+        .row.justify-content-center.p-2
+            button.col-md-3.btn.btn-primary(type="submit") Envoyer

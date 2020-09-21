@@ -164,47 +164,53 @@ router.route('/match/auto/:id')
     try {
         let _id = req.params.id
         let tournoi = await Tournoi.findById(_id).exec()
-        let participants = await Participant.find({ tournoi: tournoi._id }).exec()
-        let matchsOk = await Match.find({ tournoi: tournoi._id }).exec()
-        if(tournoi.rondeEnCours === 1 && !tournoi.isFin && matchsOk.length < tournoi.nbRondes) {
-            await Match.deleteMany({ tournoi: tournoi._id }).exec()
-            let matchs = processmatch.initialiser(participants)
-
-            matchs.forEach((elt, i) => {
-                elt.forEach((participant, y) => {
-                    if(participant.name) {
-                        participant.name.couleurs.enCours = participant.couleur
-                        matchs[i][y] = participant.name
-                    }
-                    else {
-                        let part = new Participant({
-                            tournoi: tournoi._id
-                        })
-                        matchs[i][y] = part
-                    }
+        if(tournoi) {
+            let participants = await Participant.find({ tournoi: tournoi._id }).exec()
+            let matchsOk = await Match.find({ tournoi: tournoi._id }).exec()
+            if(tournoi.rondeEnCours === 1 && !tournoi.isFin && matchsOk.length < tournoi.nbRondes) {
+                await Match.deleteMany({ tournoi: tournoi._id }).exec()
+                let matchs = processmatch.initialiser(participants)
+    
+                matchs.forEach((elt, i) => {
+                    elt.forEach((participant, y) => {
+                        if(participant.name) {
+                            participant.name.couleurs.enCours = participant.couleur
+                            matchs[i][y] = participant.name
+                        }
+                        else {
+                            let part = new Participant({
+                                tournoi: tournoi._id
+                            })
+                            matchs[i][y] = part
+                        }
+                    })
                 })
-            })
-
-            for(let i = 0; i < matchs.length; i++) {
-                await matchs[i][0].save()
-                await matchs[i][1].save()
-                let match = new Match({
-                    tournoi: tournoi._id,
-                    ronde: 1,
-                    participants: [matchs[i][0]._id, matchs[i][1]._id]
-                })
-                await match.save()
+    
+                for(let i = 0; i < matchs.length; i++) {
+                    await matchs[i][0].save()
+                    await matchs[i][1].save()
+                    let match = new Match({
+                        tournoi: tournoi._id,
+                        ronde: 1,
+                        participants: [matchs[i][0]._id, matchs[i][1]._id]
+                    })
+                    await match.save()
+                }
+    
+                if(!tournoi.isStart) {
+                    tournoi.isStart = true
+                    if(tournoi.nbRondes === 0) tournoi.nbRondes = processmatch.nombreRondes(tournoi.nbParticipants)
+                    await tournoi.save()
+                }
             }
-
-            if(!tournoi.isStart) {
-                tournoi.isStart = true
-                if(tournoi.nbRondes === 0) tournoi.nbRondes = processmatch.nombreRondes(tournoi.nbParticipants)
-                await tournoi.save()
-            }
+    
+            req.retour('success', 'Auto')
+            res.redirect(`/tournoi/${_id}`)    
         }
-
-        req.retour('success', 'Auto')
-        res.redirect(`/tournoi/${_id}`)
+        else {
+            req.retour('error', 'Tournoi inexistant')
+            res.redirect('/tournois')
+        }
     }
     catch(err) {
         req.retour('error', err.toString())

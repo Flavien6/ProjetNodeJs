@@ -1,0 +1,27 @@
+extends ../../struct/layout
+
+append content
+    .row.justify-content-center
+        .col-auto.mb-4
+            a.btn.btn-primary(href='users/new' role="button") Ajouter
+
+    .row
+        .col
+            ul.list-group.list-group-flush
+                each user, i in users
+                    li.list-group-item.align-items-center.container-fluid
+                        .row.d-flex.justify-content-between-md
+                            .col-md
+                                p #{i+1} - #{user.mail}
+
+                            .col-md-3.d-flex.justify-content-center.align-items-center
+                                .btn-toolbar.mr-2(role='toolbar', aria-label='Toolbar with button groups')
+                                    .btn-group(role='group', aria-label='group')
+                                        a.btn.btn-success.btn-sm(href="users/" + user._id  role="button") Modifier
+                                        button.btn.btn-danger.btn-sm(type='button' data-toggle='modal' data-target='#deleteModal' data-type='users' data-id=user._id data-nom=user.mail)
+                                            | Supprimer
+                else
+                    li.list-group-item.d-flex.justify-content-center.align-items-center
+                        h2 Pas d'utilisatateurs
+
+    include ../modals/delete

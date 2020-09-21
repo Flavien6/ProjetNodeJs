@@ -1,1 +1,10 @@
 extends ../struct/layout
+
+append content
+    .row.justify-content-center
+        .col-auto.p-4
+            h2=locals.auth
+
+    .row.justify-content-center.p-2
+        .col-auto.p-4
+            a.btn.btn-primary.btn-lg(href="/auth" role="button") Déconnexion
