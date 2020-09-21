@@ -94,13 +94,20 @@ router.route('/tournois/:id')
     try {
         let _id = req.params.id
         let tournoi = await Tournoi.findById(_id).exec()
-        if(!tournoi.isOpen) {
-            await Tournoi.deleteOne({ _id }).exec()
-            req.retour('success', 'Tournoi supprimé')
-            res.redirect('/tournois')
+        if(tournoi.isOpen) {
+            if(!tournoi.isOpen) {
+                await Tournoi.deleteOne({ _id }).exec()
+                req.retour('success', 'Tournoi supprimé')
+                res.redirect('/tournois')
+            }
+            else {
+                req.retour('error', 'Tournoi commencé')
+                res.redirect('/tournois')
+            }
         }
         else {
-            req.retour('error', 'Tournoi commencé')
+            await Tournoi.deleteOne({ _id }).exec()
+            req.retour('success', 'Tournoi supprimé')
             res.redirect('/tournois')
         }
     }
