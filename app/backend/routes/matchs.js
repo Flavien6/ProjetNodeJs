@@ -167,6 +167,7 @@ router.route('/match/auto/:id')
         if(tournoi) {
             let participants = await Participant.find({ tournoi: tournoi._id }).exec()
             let matchsOk = await Match.find({ tournoi: tournoi._id }).exec()
+            if(tournoi.nbRondes === 0) tournoi.nbRondes = processmatch.nombreRondes(tournoi.nbParticipants)
             if(tournoi.rondeEnCours === 1 && !tournoi.isFin && matchsOk.length < tournoi.nbRondes) {
                 await Match.deleteMany({ tournoi: tournoi._id }).exec()
                 let matchs = processmatch.initialiser(participants)

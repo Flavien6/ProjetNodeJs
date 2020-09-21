@@ -47,26 +47,27 @@ append content
 
                                     .list-group-item.list-group-item-action.container-fluid
                                         .row.d-flex.justify-content-between
-                                            .col-md-3.my-2.my-md-2
+                                            .col-md-3.d-inline-flex.justify-content-center.my-2.my-md-2
                                                 if(p1.joueur)
                                                     .d-inline.alert(class=c1? 'alert-lignt' : 'alert-dark') #{p1.joueur.nom} #{p1.joueur.prenom}
                                                 else
                                                     .d-inline.alert(class=c1? 'alert-lignt' : 'alert-dark') GHOST
-                                            .col-md-1.my-2.my-md-1
+                                            .col-md-1.d-inline-flex.justify-content-center.my-2.my-md-1
                                                 h4.d-inline.mx-3 VS
-                                            .col-md-3.my-2.my-md-2
+                                            .col-md-3.d-inline-flex.justify-content-center.my-2.my-md-2
                                                 if(p2.joueur)
                                                     .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') #{p2.joueur.nom} #{p2.joueur.prenom}
                                                 else
                                                     .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') GHOST
-                                            .col-md-3
-                                                if p1._id == match.vainqueur
-                                                    - vainq = p1.joueur.nom
-                                                else if p2._id == match.vainqueur
-                                                    - vainq = p2.joueur.nom
+                                            .col-md-3.d-inline-flex.justify-content-center.my-md-0.my-2
+                                                if match.vainqueur
+                                                    if p1._id.toString() == match.vainqueur.toString()
+                                                        - vainq = p1.joueur.nom + ' ' + p1.joueur.prenom
+                                                    else if p2._id.toString() == match.vainqueur.toString()
+                                                        - vainq = p2.joueur.nom + ' ' + p2.joueur.prenom
 
-                                                p.bg-success=vainq
-                                            .col-md-2.my-2.my-md-1
+                                                    p.d-inline.alert.alert-success=vainq
+                                            .col-md-2.d-inline-flex.justify-content-center.my-2.my-md-1
                                                 - let p1Nom = ''
                                                 - let p2Nom = ''
 
@@ -104,19 +105,27 @@ append content
 
                                     .list-group-item.list-group-item-action.container-fluid
                                         .row.d-flex.justify-content-between
-                                            .col-md-3.my-2.my-md-2
+                                            .col-md-3.d-inline-flex.justify-content-center.my-2.my-md-2
                                                 if(p1.joueur)
                                                     .d-inline.alert(class=c1? 'alert-lignt' : 'alert-dark') #{p1.joueur.nom} #{p1.joueur.prenom}
                                                 else
                                                     .d-inline.alert(class=c1? 'alert-lignt' : 'alert-dark') GHOST
-                                            .col-md-1.my-2.my-md-1
+                                            .col-md-1.d-inline-flex.justify-content-center.my-2.my-md-1
                                                 h4.d-inline.mx-3 VS
-                                            .col-md-3.my-2.my-md-2
+                                            .col-md-3.d-inline-flex.justify-content-center.my-2.my-md-2
                                                 if(p2.joueur)
                                                     .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') #{p2.joueur.nom} #{p2.joueur.prenom}
                                                 else
                                                     .d-inline.alert(class=c2? 'alert-lignt' : 'alert-dark') GHOST
-                                            .col-md-2.my-2.my-md-1
+                                            .col-md-3.d-inline-flex.justify-content-center.my-md-0.my-2
+                                                if match.vainqueur
+                                                    if p1._id.toString() == match.vainqueur.toString()
+                                                        - vainq = p1.joueur.nom + ' ' + p1.joueur.prenom
+                                                    else if p2._id.toString() == match.vainqueur.toString()
+                                                        - vainq = p2.joueur.nom + ' ' + p2.joueur.prenom
+
+                                                    p.d-inline.alert.alert-success=vainq
+                                            .col-md-2.d-inline-flex.justify-content-center.my-2.my-md-1
                                                 - let p1Nom = ''
                                                 - let p2Nom = ''
 
@@ -138,7 +147,7 @@ append content
             .row.d-flex.justify-content-between
                 button.col-md-2.btn.btn-primary.btn-lg(type='button' data-toggle='modal' data-target='#matchModal') Match
                 a.col-md-2.btn.btn-warning.btn-lg(href='/match/auto/'+tournoi._id role='button') Auto
-                button.col-md-2.btn.btn-dark.btn-lg(type='button' data-toggle='modal' data-target='#validateModal' data-type='match' data-id=tournoi._id data-nom='La ronde') Valider
+                button.col-md-2.btn.btn-dark.btn-lg(type='button' data-toggle='modal' data-target='#validateModal' data-type='match' data-id=tournoi._id data-nom='La ronde') Finir Ronde
                 a.col-md-2.btn.btn-secondary.btn-lg(href='/tournois' role='button') Retour
     
     include ../modals/match
